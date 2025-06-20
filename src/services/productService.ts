@@ -39,20 +39,22 @@ export class ProductService {
   };
 
   /**
-   * Get products by category
-   */
-  static async getProductsByCategory(category: string): Promise<ProductsResponse> {
-    const url = `${API_BASE_URL}/products/category/${category}`;
-    const response = await axios.get<ProductsResponse>(url);
-    return response.data;
-  };
-
-  /**
    * Get all product categories
    */
   static async getCategories(): Promise<any[]> {
     const url = `${API_BASE_URL}/products/categories`;
     const response = await axios.get<any[]>(url);
+    return response.data;
+  };
+
+  /**
+   * Get products by category with pagination
+   */
+  static async getProductsByCategory(category: string, skip: number = 0, limit: number = 10): Promise<ProductsResponse> {
+    const url = `${API_BASE_URL}/products/category/${category}`;
+    const response = await axios.get<ProductsResponse>(url, {
+      params: { skip, limit }
+    });
     return response.data;
   };
 }
