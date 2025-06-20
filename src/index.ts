@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express, { Request, Response } from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import { ArithmeticOperations } from "./tools/arthematicOperations.js";
+import { ArithmeticOperations } from "./tools/arithmeticOperations.js";
 import { FetchProduct, FetchAllProducts } from './tools/products.js';
 import dotenv from 'dotenv';
 
