@@ -2,8 +2,11 @@ import 'dotenv/config';
 import express, { Request, Response } from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import { ArithmeticOperations } from './tools/ArthematicOperations.js';
+import { ArithmeticOperations } from "./tools/arthematicOperations.js";
+import { FetchProduct } from './tools/products.js';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const transports: { [sessionId: string]: SSEServerTransport } = {};
 
 const server = new McpServer(
@@ -11,7 +14,9 @@ const server = new McpServer(
  { capabilities: { tools: {}}}
 );
 
+// Register tools with the MCP server
 ArithmeticOperations(server);
+FetchProduct(server);
 
 const app = express();
 app.use(express.json());
@@ -57,7 +62,7 @@ app.post("/messages", async (req: Request, res: Response) => {
 
 });
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`MCP Server running on port ${PORT}`);
