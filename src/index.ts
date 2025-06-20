@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { ArithmeticOperations } from "./tools/arthematicOperations.js";
-import { FetchProduct } from './tools/products.js';
+import { FetchProduct, FetchAllProducts } from './tools/products.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,6 +17,7 @@ const server = new McpServer(
 // Register tools with the MCP server
 ArithmeticOperations(server);
 FetchProduct(server);
+FetchAllProducts(server);
 
 const app = express();
 app.use(express.json());

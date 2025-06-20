@@ -32,4 +32,33 @@ export const FetchProduct = (server: McpServer) => {
       };
     }
   );
-}
+};
+
+/**
+ * FetchAllProducts tool for the MCP server.
+ * This tool fetches all products from the DummyJSON API with optional pagination parameters.
+ * 
+ * @param server - The McpServer instance to register the tool with.
+ */
+export const FetchAllProducts = (server: McpServer) => {
+  server.tool(
+    'fetch_all_products',
+    'Fetches all products from the DummyJSON API with optional pagination parameters.',
+    {
+      skip: z.number().int().optional().describe("Number of products to skip for pagination."),
+      limit: z.number().int().optional().describe("Maximum number of products to return.")
+    },
+    async ({ skip, limit }) => {
+      const products = await ProductService.getProducts(skip, limit);
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(products),
+            fommat: 'json'
+          }
+        ]
+      };
+    }
+  );
+};

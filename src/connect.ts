@@ -86,6 +86,8 @@ async function main() {
   const PORT = process.env.PORT;
   const mcpConnector = new MCPConnector(`http://localhost:${PORT}/`);
   await mcpConnector.invokeTool('add_two_numbers', { firstNumber: 25.6, secondNumber: 50 });
+  /* await mcpConnector.invokeTool('fetch_product', { id: 35 }); */
+  await mcpConnector.invokeTool('fetch_all_products', { skip: 0, limit: 5 });
 };
 
 main();
