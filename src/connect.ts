@@ -31,7 +31,7 @@ async function invokeArthematicOperation(firstNumber: number, secondNumber: numb
       jsonrpc: '2.0',
       method: 'tools/call',
       params: {
-        name: 'Add Two Numbers',
+        name: 'add_two_numbers',
         arguments: {
           firstNumber: firstNumber,
           secondNumber: secondNumber,

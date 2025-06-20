@@ -4,7 +4,7 @@ import { z } from "zod";
 
 export const ArithmeticOperations = (server: McpServer) => {
   server.tool(
-    'Add Two Numbers',
+    'add_two_numbers',
     'Adds two numbers together. This tool accepts any two numeric values (integers or decimals) from the user and returns their sum.',
     {
       firstNumber: z.number().describe("The first number to add."),
