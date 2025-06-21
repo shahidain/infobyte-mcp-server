@@ -64,6 +64,17 @@ app.post("/messages", async (req: Request, res: Response) => {
 
 });
 
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    server: "Infobyte MCP Server",
+    version: "1.0.0",
+    uptime: process.uptime(),
+    activeConnections: Object.keys(transports).length
+  });
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {

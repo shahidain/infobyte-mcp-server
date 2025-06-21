@@ -19,9 +19,10 @@ export const ArithmeticOperations = (server: McpServer) => {
         content:[
           {
             type: 'text',
-            text: `The sum of ${firstNumber} and ${secondNumber} is ${sum}`
+            text: `The sum of ${firstNumber} and ${secondNumber} is ${sum}`,
           }
-        ]
+        ],
+        isError: false,
       };
     }
   );

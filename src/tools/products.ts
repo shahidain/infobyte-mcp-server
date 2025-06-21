@@ -17,9 +17,7 @@ export const FetchProduct = (server: McpServer) => {
       id: z.number().describe("The ID of the product to fetch.")
     },
     async ({ id }) => {
-      if (typeof id !== 'number') {
-        throw new Error('Product ID must be a number.');
-      }
+      throw new Error('Product ID must be a number.');
       const product = await ProductService.getProductById(id);
       return {
         content: [
@@ -28,7 +26,8 @@ export const FetchProduct = (server: McpServer) => {
             text: JSON.stringify(product),
             fommat: 'json'
           }
-        ]
+        ],
+        isError: false
       };
     }
   );
@@ -57,7 +56,8 @@ export const FetchAllProducts = (server: McpServer) => {
             text: JSON.stringify(products),
             fommat: 'json'
           }
-        ]
+        ],
+        isError: false
       };
     }
   );
@@ -90,7 +90,8 @@ export const FetchProductsByCategory = (server: McpServer) => {
             text: JSON.stringify(products),
             fommat: 'json'
           }
-        ]
+        ],
+        isError: false
       };
     }
   );
