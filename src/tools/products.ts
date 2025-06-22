@@ -17,7 +17,9 @@ export const FetchProduct = (server: McpServer) => {
       id: z.number().describe("The ID of the product to fetch.")
     },
     async ({ id }) => {
-      throw new Error('Product ID must be a number.');
+      if (typeof id !== 'number') {
+        throw new Error('Product ID must be a number.');
+      }
       const product = await ProductService.getProductById(id);
       return {
         content: [
@@ -44,8 +46,8 @@ export const FetchAllProducts = (server: McpServer) => {
     'fetch_all_products',
     'Fetches all products from the DummyJSON API with optional pagination parameters.',
     {
-      skip: z.number().int().optional().describe("Number of products to skip for pagination."),
-      limit: z.number().int().optional().describe("Maximum number of products to return.")
+      skip: z.number().int().optional().nullable().default(0).describe("Number of products to skip for pagination."),
+      limit: z.number().int().optional().nullable().default(10).describe("Maximum number of products to return.")
     },
     async ({ skip, limit }) => {
       const products = await ProductService.getProducts(skip, limit);

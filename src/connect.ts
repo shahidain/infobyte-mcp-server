@@ -10,6 +10,7 @@ class MCPConnector {
   private mcpServerUrl: string;
   private connectionReady: Promise<string>;
   private resolveConnection!: (sessionId: string) => void;
+  private pendingCallbacks: Map<string, (data: any) => void> = new Map();
   
   constructor(serverUrl: string) {
     this.mcpServerUrl = serverUrl;
@@ -29,25 +30,17 @@ class MCPConnector {
 
     this.eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log('Received message:', data);
       if (data?.params?.sessionId) {
         this.sessionId = data?.params?.sessionId || this.sessionId;
         this.resolveConnection(this.sessionId!);
         return;
       };
 
-      if(data?.result?.content?.length > 0) {
-        if (data?.result?.content[0]?.fommat === 'json') {
-          try {
-            const content = JSON.parse(data.result.content[0].text);
-            console.log('Received content:', JSON.stringify(content, null, 2));
-          } catch (error) {
-            console.error('Error parsing JSON content:', error);
-          }
-        }
-        else 
-          console.log('Received tool response:', data?.result?.content[0]?.text);
-      };
+      const callback = this.pendingCallbacks.get(data?.id);
+      if(callback === undefined)
+        return console.warn(`No callback found for message ID: ${data?.id}`);
+      callback?.(data);
+      this.pendingCallbacks.delete(data?.id);
     };
 
     process.on('SIGINT', () => {
@@ -56,10 +49,10 @@ class MCPConnector {
     });
   };
 
-  async invokeTool(toolName: string, args: any): Promise<void> {
-    const messageId = randomUUID();
+  async invokeTool(toolName: string, args: any, messageId: string, callBack: (data: any) => void): Promise<void> {
     const sessionId = await this.connectionReady;
     try {
+      this.pendingCallbacks.set(messageId, callBack);
       await axios.post(`${this.mcpServerUrl}messages`, {
         jsonrpc: '2.0',
         method: 'tools/call',
@@ -103,8 +96,14 @@ class MCPConnector {
 async function main() {
   const PORT = process.env.PORT;
   const mcpConnector = new MCPConnector(`http://localhost:${PORT}/`);
+  const messageId = randomUUID();
   /*await mcpConnector.fetchTools();*/
-  await mcpConnector.invokeTool('add_two_numbers', { firstNumber: 25.6, secondNumber: 50 });
+  await mcpConnector.invokeTool('add_two_numbers', { firstNumber: 25.6, secondNumber: 50 }, messageId, (data) => {
+    console.log('Message Ids:', `Response - ${data?.id} - Request - ${messageId}`);
+    if (data?.id === messageId) {
+      console.log('Tool response on callback function:', data?.result);
+    } 
+  });
   /*await mcpConnector.invokeTool('fetch_product', { id: 25 });
   await mcpConnector.invokeTool('fetch_all_products', { skip: 0, limit: 5 });
   await mcpConnector.invokeTool('fetch_products_by_category', { category: 'fragrances', skip: 0, limit: 5 }); */

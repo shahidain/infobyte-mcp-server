@@ -4,6 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { ArithmeticOperations } from "./tools/arithmeticOperations.js";
 import { FetchProduct, FetchAllProducts, FetchProductsByCategory } from './tools/products.js';
+import { FetchJiraIssues } from './tools/jira.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -19,6 +20,7 @@ ArithmeticOperations(server);
 FetchProduct(server);
 FetchAllProducts(server);
 FetchProductsByCategory(server);
+FetchJiraIssues(server);
 
 const app = express();
 app.use(express.json());

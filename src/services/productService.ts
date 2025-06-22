@@ -10,7 +10,7 @@ export class ProductService {
   /**
    * Fetch all products with optional limit and skip parameters
   */
-  static async getProducts(skip: number = 0, limit: number = 10): Promise<ProductsResponse> {
+  static async getProducts(skip: number | null | undefined, limit: number | null | undefined): Promise<ProductsResponse> {
     const url = `${API_BASE_URL}/products`;
     const response = await axios.get<ProductsResponse>(url, { 
       params: { skip, limit }
