@@ -50,10 +50,12 @@ app.get("/sse", async (req: Request, res: Response) => {
 app.post("/messages", async (req: Request, res: Response) => {
   
   const receivedMessage = req.body; 
+  console.log("Received message:", receivedMessage);
   const sessionId = receivedMessage?.params?.sessionId;
-  const transport = transports[sessionId] ?? Object.values(transports)[0];
+  const transport = transports[sessionId];
   
   if (!transport) {
+    console.error(`SSE transport session id not found: ${sessionId}`);
     return res.status(404).json({ error: "SSE transport session id not found" });
   };
   
