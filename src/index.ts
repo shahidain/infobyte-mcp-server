@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express, { Request, Response } from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-import { ArithmeticOperations } from "./tools/arithmeticOperations.js";
+import { GetCurrentTime } from './tools/currentTime.js';
 import { FetchProduct, FetchAllProducts, FetchProductsByCategory } from './tools/products.js';
 import { FetchJiraIssues } from './tools/jira.js';
 import dotenv from 'dotenv';
@@ -16,7 +16,7 @@ const server = new McpServer(
 );
 
 // Register tools with the MCP server
-ArithmeticOperations(server);
+GetCurrentTime(server);
 FetchProduct(server);
 FetchAllProducts(server);
 FetchProductsByCategory(server);

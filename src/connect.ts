@@ -2,6 +2,7 @@ import { EventSource } from 'eventsource';
 import axios from 'axios';
 import { randomUUID } from 'crypto';
 import dotenv from 'dotenv';
+import { date } from 'zod';
 dotenv.config();
 
 class MCPConnector {
@@ -72,14 +73,16 @@ class MCPConnector {
     }
   };
 
-  async fetchTools(): Promise<void> {
+  async fetchTools(callBack: (data: any) => void): Promise<void> {
     const sessionId = await this.connectionReady;
+    const messageId = randomUUID();
+    this.pendingCallbacks.set(messageId, callBack);
     try {
       await axios.post(`${this.mcpServerUrl}messages`, {
         jsonrpc: '2.0',
         method: 'tools/list',
         params: { sessionId },
-        id: randomUUID(),
+        id: messageId,
       });
     } catch (error) {
       console.error('Error fetching tools:', (error as any).response?.data || (error as any).message);
@@ -97,16 +100,19 @@ async function main() {
   const PORT = process.env.PORT;
   const mcpConnector = new MCPConnector(`http://localhost:${PORT}/`);
   const messageId = randomUUID();
-  /*await mcpConnector.fetchTools();*/
-  await mcpConnector.invokeTool('add_two_numbers', { firstNumber: 25.6, secondNumber: 50 }, messageId, (data) => {
+  await mcpConnector.fetchTools((data) => {
     console.log('Message Ids:', `Response - ${data?.id} - Request - ${messageId}`);
-    if (data?.id === messageId) {
-      console.log('Tool response on callback function:', data?.result);
-    } 
+    console.log('Tools:', JSON.stringify(data?.result?.tools, null, 2));
   });
+  
   /*await mcpConnector.invokeTool('fetch_product', { id: 25 });
   await mcpConnector.invokeTool('fetch_all_products', { skip: 0, limit: 5 });
   await mcpConnector.invokeTool('fetch_products_by_category', { category: 'fragrances', skip: 0, limit: 5 }); */
+
+  await mcpConnector.invokeTool('fetch_jira_issues', { jql: 'project = SCRUM AND issuetype = Story AND status = Done' }, messageId, (data) => {
+    console.log('Message Ids:', `Response - ${data?.id} - Request - ${messageId}`);
+    console.log('Jira Issues:', JSON.stringify(data?.result?.content, null, 2));
+  });
 };
 
 main();
