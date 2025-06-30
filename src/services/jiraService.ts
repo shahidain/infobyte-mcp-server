@@ -50,7 +50,7 @@ export class JiraService {
    * Search JIRA issues using JQL
    */
   static async searchIssues(jql: string): Promise<JiraSearchResponse | undefined> {
-    const url = `${JIRA_API_URL}/search`;
+    const url = `${JIRA_API_URL}search`;
     console.log(`Searching JIRA issues with JQL: ${jql} with URL: ${url}`);
     const response = await jiraClient.get<JQLResponse>(url, {
       params: { jql }

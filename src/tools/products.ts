@@ -12,7 +12,7 @@ import { ProductService } from "../services/productService.js";
 export const FetchProduct = (server: McpServer) => {
   server.tool(
     'fetch_product',
-    'Fetches a product by its ID from the DummyJSON API.',
+    `Fetches a product by its ID from the DummyJSON API. Parameter 'id' (type: number, integer) is required field`,
     {
       id: z.number().describe("The ID of the product to fetch.")
     },
@@ -44,10 +44,10 @@ export const FetchProduct = (server: McpServer) => {
 export const FetchAllProducts = (server: McpServer) => {
   server.tool(
     'fetch_all_products',
-    'Fetches all products from the DummyJSON API with optional pagination parameters.',
+    `Fetches all products from the DummyJSON API with optional pagination parameters. Parameter: 'skip' (type: number, integer) - Number of products to skip for pagination. Must be a non-negative integer. Use this to implement pagination by skipping the first N products. Default value is 0 (start from the beginning). Parameter: 'limit' (type: number, integer) - Maximum number of products to return in a single request. Must be a positive integer. Use this to control page size and prevent large response payloads. Default value is 10 products. The API may have its own maximum limit.`,
     {
-      skip: z.number().int().optional().nullable().default(0).describe("Number of products to skip for pagination."),
-      limit: z.number().int().optional().nullable().default(10).describe("Maximum number of products to return.")
+      skip: z.number().int().default(0).describe("Parameter: 'skip' (type: number, integer) - Number of products to skip for pagination. Must be a non-negative integer. Use this to implement pagination by skipping the first N products. Default value is 0 (start from the beginning)."),
+      limit: z.number().int().default(10).describe("Parameter: 'limit' (type: number, integer) - Maximum number of products to return in a single request. Must be a positive integer. Use this to control page size and prevent large response payloads. Default value is 10 products. The API may have its own maximum limit.")
     },
     async ({ skip, limit }) => {
       const products = await ProductService.getProducts(skip, limit);
